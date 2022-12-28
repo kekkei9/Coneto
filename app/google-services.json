@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "365960653488",
+    "project_id": "coneto-5a3f8",
+    "storage_bucket": "coneto-5a3f8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:365960653488:android:3b1ab36015518cd4c36975",
+        "android_client_info": {
+          "package_name": "Coneto.App"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "365960653488-5omnqv8v2lkph2bheocsa11elvkat86q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBc7m2sVobd9jR2T1takg51LlsLr6yADzU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "365960653488-5omnqv8v2lkph2bheocsa11elvkat86q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:365960653488:android:49b75498f47315f8c36975",
+        "android_client_info": {
+          "package_name": "com.example.coneto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "365960653488-5omnqv8v2lkph2bheocsa11elvkat86q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBc7m2sVobd9jR2T1takg51LlsLr6yADzU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "365960653488-5omnqv8v2lkph2bheocsa11elvkat86q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
