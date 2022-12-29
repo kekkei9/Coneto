@@ -286,7 +286,7 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
                 } else if(holder instanceof ChatPictureHolder) {
                     ChatPictureHolder chatPictureHolder = (ChatPictureHolder) holder;
                     chatPictureHolder.text_chat_message.setText(model.getContent());
-                    chatPictureHolder.text_chat_message.setText(
+                    chatPictureHolder.text_time.setText(
                             DateUtils.getRelativeTimeSpanString(model.getTimeStamp(),
                                             Calendar.getInstance().getTimeInMillis(),0 )
                                     .toString() );
@@ -296,7 +296,7 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
                 } else if(holder instanceof ChatPictureReceiveHolder) {
                     ChatPictureReceiveHolder chatPictureHolder = (ChatPictureReceiveHolder) holder;
                     chatPictureHolder.text_chat_message.setText(model.getContent());
-                    chatPictureHolder.text_chat_message.setText(
+                    chatPictureHolder.text_time.setText(
                             DateUtils.getRelativeTimeSpanString(model.getTimeStamp(),
                                             Calendar.getInstance().getTimeInMillis(),0 )
                                     .toString() );
@@ -316,8 +316,8 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
                     return new ChatTextReceiveHolder(view);
                 } else if (viewType == 1) {
                     view = LayoutInflater.from(parent.getContext())
-                            .inflate(R.layout.layout_message_text_friend, parent, false);
-                    return new ChatTextReceiveHolder(view);
+                            .inflate(R.layout.layout_message_picture_own, parent, false);
+                    return new ChatPictureReceiveHolder(view);
                 }
                 else if (viewType == 2) {
                     view = LayoutInflater.from(parent.getContext())
@@ -325,7 +325,7 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
                     return new ChatTextHolder(view);
                 } else {
                     view = LayoutInflater.from(parent.getContext())
-                            .inflate(R.layout.layout_message_text_friend, parent, false);
+                            .inflate(R.layout.layout_message_picture_friend, parent, false);
                     return new ChatPictureHolder(view);
                 }
             }
