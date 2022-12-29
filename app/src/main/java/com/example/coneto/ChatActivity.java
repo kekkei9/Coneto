@@ -37,6 +37,10 @@ import com.example.coneto.Listener.IFirebaseLoadFailed;
 import com.example.coneto.Listener.ILoadTimeFromFirebaseListener;
 import com.example.coneto.Model.ChatInfoModel;
 import com.example.coneto.Model.ChatMessageModel;
+import com.example.coneto.Model.FCMResponse;
+import com.example.coneto.Model.FCMSendData;
+import com.example.coneto.Remote.IFCMService;
+import com.example.coneto.Remote.RetrofitFCMClient;
 import com.example.coneto.ViewHolders.ChatPictureHolder;
 import com.example.coneto.ViewHolders.ChatPictureReceiveHolder;
 import com.example.coneto.ViewHolders.ChatTextHolder;
@@ -73,6 +77,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.grpc.Context;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.Scheduler;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFirebaseListener, IFirebaseLoadFailed {
 
@@ -119,6 +128,9 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
 
 
     LinearLayoutManager layoutManager;
+
+    IFCMService ifcmService;
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @OnClick(R.id.img_image)
     void onSelectImageClick() {
@@ -335,7 +347,16 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
         recycler_chat.setAdapter(adapter);
     }
 
+    @Override
+    protected void onDestroy() {
+        compositeDisposable.clear();
+        Common.roomSelected = "";
+        super.onDestroy();
+    }
+
     private void initViews() {
+        ifcmService = RetrofitFCMClient.getInstance().create(IFCMService.class);
+
         listener = this;
         errorListener = this;
         database = FirebaseDatabase.getInstance();
@@ -476,8 +497,9 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
                                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                             })
                             .addOnSuccessListener(aVoid1 -> {
-                                chatRef.child(Common.generateChatRoomId(Common.chatUser.getUid(),
-                                                FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                String room_id = Common.generateChatRoomId(Common.chatUser.getUid(),
+                                                FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                chatRef.child(room_id)
                                         .child(Common.CHAT_DETAIL_REFERENCE)
                                         .push()
                                         .setValue(chatMessageModel)
@@ -500,12 +522,39 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
                                                         fileUri = null;
                                                         img_preview.setVisibility(View.GONE);
                                                     }
+                                                    sendNotificationToFriend(chatMessageModel, room_id);
                                                 }
                                             }
                                         });
                             });
                 });
 
+    }
+
+    private void sendNotificationToFriend(ChatMessageModel chatMessageModel, String room_id) {
+        Map<String, String> notiData = new HashMap<>();
+        notiData.put(Common.NOTI_TITLE, "Message from " + chatMessageModel.getName());
+        notiData.put(Common.NOTI_CONTENT, chatMessageModel.getContent());
+        notiData.put(Common.NOTI_SENDER, FirebaseAuth.getInstance().getCurrentUser().getUid());
+        notiData.put(Common.NOTI_ROOM_ID, room_id);
+
+        FCMSendData sendData = new FCMSendData("/topics/"+ room_id, notiData);
+
+        compositeDisposable.add(ifcmService.sendNotification(sendData)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<FCMResponse>() {
+                    @Override
+                    public void accept(FCMResponse fcmResponse) throws Exception {
+
+                    }
+                }
+                , new io.reactivex.functions.Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Toast.makeText(ChatActivity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }));
     }
 
     private void createChat(ChatMessageModel chatMessageModel, boolean isPicture, long estimateTimeInMs) {
@@ -542,8 +591,9 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
                                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                             })
                             .addOnSuccessListener(aVoid1 -> {
-                                chatRef.child(Common.generateChatRoomId(Common.chatUser.getUid(),
-                                        FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                String room_id = Common.generateChatRoomId(Common.chatUser.getUid(),
+                                        FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                chatRef.child(room_id)
                                         .child(Common.CHAT_DETAIL_REFERENCE)
                                         .push()
                                         .setValue(chatMessageModel)
@@ -566,6 +616,7 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
                                                         fileUri = null;
                                                         img_preview.setVisibility(View.GONE);
                                                     }
+                                                    sendNotificationToFriend(chatMessageModel, room_id);
                                                 }
                                             }
                                         });
