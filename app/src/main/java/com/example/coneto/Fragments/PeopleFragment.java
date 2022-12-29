@@ -27,10 +27,12 @@ import com.example.coneto.R;
 import com.example.coneto.ViewHolders.UserViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.firestore.auth.User;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -96,7 +98,17 @@ public class PeopleFragment extends Fragment {
                     holder.itemView.setOnClickListener(v -> {
                         Common.chatUser = model;
                         Common.chatUser.setUid(adapter.getRef(position).getKey());
-                        startActivity(new Intent(getContext(), ChatActivity.class));
+                        String room_id = Common.generateChatRoomId(FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                                Common.chatUser.getUid());
+                        Common.roomSelected = room_id;
+                        FirebaseMessaging.getInstance()
+                                .subscribeToTopic(room_id)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        startActivity(new Intent(getContext(), ChatActivity.class));
+                                    }
+                                });
                     });
                 } else {
                     holder.itemView.setVisibility(View.GONE);

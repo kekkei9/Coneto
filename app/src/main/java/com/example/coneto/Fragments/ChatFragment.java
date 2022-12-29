@@ -26,12 +26,14 @@ import com.example.coneto.R;
 import com.example.coneto.ViewHolders.ChatInfoHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.text.SimpleDateFormat;
 
@@ -119,7 +121,18 @@ public class ChatFragment extends Fragment {
                                             UserModel userModel = snapshot.getValue(UserModel.class);
                                             Common.chatUser = userModel;
                                             Common.chatUser.setUid(snapshot.getKey());
-                                            startActivity(new Intent(getContext(), ChatActivity.class));
+                                            String room_id = Common.generateChatRoomId(FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                                                    Common.chatUser.getUid());
+                                            Common.roomSelected = room_id;
+                                            FirebaseMessaging.getInstance()
+                                                            .subscribeToTopic(room_id)
+                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                        @Override
+                                                                        public void onSuccess(Void unused) {
+                                                                            startActivity(new Intent(getContext(), ChatActivity.class));
+                                                                        }
+                                                                    });
+
                                         }
                                     }
 
