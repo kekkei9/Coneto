@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,6 +108,7 @@ public class ChatFragment extends Fragment {
                     holder.text_name.setText(displayName);
                     holder.last_message.setText(model.getLastMessage());
                     holder.text_time.setText(simpleDateFormat.format(model.getLastUpdate()));
+                    holder.img_avatar.setImageDrawable(drawable);
 
                     holder.itemView.setOnClickListener(v -> {
                         FirebaseDatabase.getInstance()
@@ -124,6 +126,7 @@ public class ChatFragment extends Fragment {
                                             String room_id = Common.generateChatRoomId(FirebaseAuth.getInstance().getCurrentUser().getUid(),
                                                     Common.chatUser.getUid());
                                             Common.roomSelected = room_id;
+                                            Log.d("ROOM", room_id);
                                             FirebaseMessaging.getInstance()
                                                             .subscribeToTopic(room_id)
                                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {

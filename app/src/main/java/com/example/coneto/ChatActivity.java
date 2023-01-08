@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -131,6 +132,7 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
 
     IFCMService ifcmService;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
+
 
     @OnClick(R.id.img_image)
     void onSelectImageClick() {
@@ -390,6 +392,9 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         toolbar.setNavigationOnClickListener(v -> {
+            Intent intent = new Intent(ChatActivity.this, MainActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
             finish();
         });
     }
@@ -623,6 +628,7 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
                             });
                 });
     }
+
 
     @Override
     public void onError(String message) {

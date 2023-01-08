@@ -95,6 +95,8 @@ public class PeopleFragment extends Fragment {
                     holder.text_name.setText(stringBuilder.toString());
                     holder.text_bio.setText(model.getBio());
 
+                    holder.img_avatar.setImageDrawable(drawable);
+
                     holder.itemView.setOnClickListener(v -> {
                         Common.chatUser = model;
                         Common.chatUser.setUid(adapter.getRef(position).getKey());

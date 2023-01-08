@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
                 android:id="@+id/edit_chat"
-                android:hint="Ypur message" />
+                android:hint="Your message" />
 
             <ImageView
                 android:layout_width="wrap_content"

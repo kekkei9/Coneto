@@ -108,10 +108,10 @@ public class Common {
                 builder.setContentIntent(pendingIntent);
             }
             Notification notification = builder.build();
-            if(!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(sender) &&
-            !Common.roomSelected.equals(room_id)) {
+//            if(!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(sender) &&
+//            !Common.roomSelected.equals(room_id)) {
                 notificationManager.notify(id, notification);
-            }
+//            }
 
         }
     }
